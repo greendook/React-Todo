@@ -1,13 +1,73 @@
 import React from 'react';
+import Header from './components/layout/header';
+import Todos from './components/Todos';
+import AddTodo from './components/AddTodo';
+import './App.css';
+// UUID adds random IDs to your items
+import { v4 as uuidv4 } from 'uuid';
 
 class App extends React.Component {
-  // you will need a place to store your state in this component.
-  // design `App` to be the parent component of your application.
-  // this component is going to take care of state, and any change handlers you need to work with your state
+  state = {
+    todos: [
+      {
+        id: uuidv4(),
+        title: 'Take out the trash',
+        completed: false,
+      },
+      {
+        id: uuidv4(),
+        title: 'Dinner with wife',
+        completed: false,
+      },
+      {
+        id: uuidv4(),
+        title: 'Meeting with boss',
+        completed: false,
+      },
+    ],
+  };
+
+  // Toggle Complete
+  markComplete = (id) => {
+    this.setState({
+      todos: this.state.todos.map((todo) => {
+        if (todo.id === id) {
+          todo.completed = !todo.completed;
+        }
+        return todo;
+      }),
+    });
+  };
+
+  // Delete Todo
+  delTodo = (id) => {
+    this.setState({
+      todos: [...this.state.todos.filter((todo) => todo.id !== id)],
+    });
+  };
+
+  // Add Todo
+  addTodo = (title) => {
+    const newTodo = {
+      id: uuidv4(),
+      title,
+      completed: false,
+    };
+    this.setState({ todos: [...this.state.todos, newTodo] });
+  };
+
   render() {
     return (
-      <div>
-        <h2>Welcome to your Todo App!</h2>
+      <div className="App">
+        <div className="container">
+          <Header />
+          <AddTodo addTodo={this.addTodo} />
+          <Todos
+            todos={this.state.todos}
+            markComplete={this.markComplete}
+            delTodo={this.delTodo}
+          />
+        </div>
       </div>
     );
   }
